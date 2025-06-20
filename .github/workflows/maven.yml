@@ -20,8 +20,20 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Run tests (tolerant)
-        run: mvn -f backend/pom.xml --batch-mode -Dmaven.test.failure.ignore=true test
+      # Tests nur ausführen, wenn nicht auf main gepusht wird
+      - name: Test
+        if: github.ref != 'refs/heads/main'
+        run: mvn -f backend/ --batch-mode test
 
       - name: Build with Maven
-        run: mvn -f backend/pom.xml -B package
+        run: mvn -B package --file backend/pom.xml
+
+      # Nur Report, wenn Tests gelaufen sind
+      - name: Report
+        if: github.ref != 'refs/heads/main'
+        uses: dorny/test-reporter@v1
+        with:
+          name: Maven Tests
+          path: backend/target/surefire-reports/*.xml
+          reporter: java-junit
+          fail-on-error: false
