@@ -1,20 +1,35 @@
 import App from "../src/App";
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import fetchMock from 'jest-fetch-mock';
 
-test('updates input field value when user types', () => {
+fetchMock.enableMocks();
+
+beforeEach(() => {
+  fetch.resetMocks();
+});
+
+test('calls DELETE fetch when delete button is clicked', async () => {
+  fetch.mockResponseOnce(JSON.stringify([
+    { id: 1, taskdescription: 'Task zum Löschen' }
+  ]));
+
   render(<App />);
-  const input = screen.getByLabelText(/neues todo anlegen/i);
 
-  // Check that the input field is of type text
-  expect(input).toHaveAttribute('type', 'text');
+  const deleteButton = await screen.findByRole('button', { name: '✔' });
+  expect(deleteButton).toBeInTheDocument();
 
-  // Anfangs soll das Eingabefeld leer sein
-  expect(input.value).toBe('');
+  fetch.mockResponseOnce('', { status: 200 });
 
-  // Simuliere Nutzereingabe
-  fireEvent.change(input, { target: { value: 'Neue Aufgabe' } });
+  fireEvent.click(deleteButton);
 
-  // Überprüfe, ob der Wert aktualisiert wurde
-  expect(input.value).toBe('Neue Aufgabe');
+  await waitFor(() => {
+    expect(fetch).toHaveBeenCalledWith(
+      'http://localhost:8080/task/1',
+      expect.objectContaining({
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+      })
+    );
+  });
 });
