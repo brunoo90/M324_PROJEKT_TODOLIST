@@ -9,12 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 import jakarta.transaction.Transactional;
 
 import com.example.demo.Repository.TaskRepository;
@@ -38,9 +39,9 @@ public class TodoDeleteTest {
         final String taskDesc = "task to delete";
 
         try {
-            // 1. Add a task first
+            // JSON mit korrektem Feldnamen
             JSONObject taskJson = new JSONObject();
-            taskJson.put("taskdescription", taskDesc);
+            taskJson.put("taskDescription", taskDesc);
 
             String postResponse = mockMvc.perform(MockMvcRequestBuilders.post("/task")
                     .content(taskJson.toString())
@@ -58,7 +59,7 @@ public class TodoDeleteTest {
                 fail("Task ID not found after adding task");
             }
 
-            // 2. Delete the task by ID
+            // Task löschen
             mockMvc.perform(MockMvcRequestBuilders.delete("/task/" + taskId))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 

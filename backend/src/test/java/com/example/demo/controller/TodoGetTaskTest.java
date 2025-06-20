@@ -32,16 +32,16 @@ public class TodoGetTaskTest {
     @Transactional
     public void testGetTasks() {
         try {
-            // Erst Task hinzufügen
+            // Task hinzufügen mit korrektem Feldnamen
             JSONObject taskJson = new JSONObject();
-            taskJson.put("taskdescription", "Get test task");
+            taskJson.put("taskDescription", "Get test task");
 
             mockMvc.perform(MockMvcRequestBuilders.post("/task")
                     .content(taskJson.toString())
                     .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
 
-            // Dann prüfen, ob die Task in der Liste erscheint
+            // Task abrufen und prüfen
             mockMvc.perform(MockMvcRequestBuilders.get("/task"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(org.hamcrest.Matchers.containsString("Get test task")));

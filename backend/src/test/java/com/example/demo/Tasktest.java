@@ -6,16 +6,15 @@ import org.junit.jupiter.api.Test;
 public class Tasktest {
 
     @Test
-    void testDescription(){
+    void testDescription() {
 
-    final String taskdescription = "DEMO";
+        final String taskDescription = "DEMO";
 
-    Task testee = new Task();
+        Task testee = new Task();
 
-    testee.setTaskdescription(taskdescription);
+        testee.setTaskDescription(taskDescription); // camelCase Setter
 
-    assertEquals(taskdescription, testee.getTaskdescription(),"should be the End");
+        assertEquals(taskDescription, testee.getTaskDescription(), "should be the End"); // camelCase Getter
     }
 
-    
 }

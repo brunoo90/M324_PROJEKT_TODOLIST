@@ -1,3 +1,5 @@
+package com.example.demo.repository;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -14,10 +16,10 @@ import com.example.demo.Task;
 import com.example.demo.Repository.TaskRepository;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@SpringBootTest(classes = com.example.demo.DemoApplication.class, webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
-@ActiveProfiles("test") /* make sure u have that line! */
+@ActiveProfiles("test")
 public class TaskRepositoryTest {
 
     @Autowired 
@@ -26,11 +28,14 @@ public class TaskRepositoryTest {
     @Test
     public void testSaveAndRetrieve() {
         Task t = new Task();
-        t.setTaskdescription("test");
+        t.setTaskDescription("test"); // ✅ Korrigierte Methode
         taskRepository.save(t);
-        assertNotNull(t.getId());
+
+        assertNotNull(t.getId()); // Prüft, ob die ID nach dem Speichern generiert wurde
+
         Task retrievedTask = taskRepository.findById(t.getId()).get();
-        assertNotNull(retrievedTask);
-        assertEquals(t.getId(), retrievedTask.getId());
+        assertNotNull(retrievedTask); // Prüft, ob ein Task gefunden wurde
+
+        assertEquals(t.getId(), retrievedTask.getId()); // Vergleicht die IDs
     }
 }
