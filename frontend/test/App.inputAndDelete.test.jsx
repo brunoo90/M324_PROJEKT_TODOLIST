@@ -7,25 +7,29 @@ beforeEach(() => {
 });
 
 test('calls DELETE fetch when delete button is clicked', async () => {
-  // Mock für initiales Laden der Todos
+  // 🟢 Mock initiales Laden mit einem Todo
   fetch.mockResponseOnce(JSON.stringify([
     { id: 1, taskdescription: 'Task zum Löschen' },
   ]));
 
   render(<App />);
 
-  // Warte, bis die Aufgabe gerendert ist
-  const deleteButton = await screen.findByRole('button', { name: '✓' });
+  // 🟡 Suche nach "Task zum Löschen", dann hole den Button daneben
+  const todoText = await screen.findByText(/Task zum Löschen/i);
+  expect(todoText).toBeInTheDocument();
+
+  // 🔍 Suche den Button im gleichen <li>
+  const todoItem = todoText.closest('li');
+  const deleteButton = todoItem?.querySelector('button');
   expect(deleteButton).toBeInTheDocument();
 
-  // Mock für DELETE Anfrage
-  fetch.mockResponseOnce('', { status: 200 });
+  // 🔄 Mock für DELETE-Request → leere, aber gültige Antwort
+  fetch.mockResponseOnce('{}', { status: 200 });
 
-  // Klick auf den Delete Button
+  // 🚮 Klicke auf Delete
   fireEvent.click(deleteButton);
 
   await waitFor(() => {
-    // Prüfe, ob fetch mit Methode DELETE aufgerufen wurde
     expect(fetch).toHaveBeenCalledWith(
       'http://localhost:8080/task/1',
       expect.objectContaining({
