@@ -1,22 +1,30 @@
 package com.example.demo;
 
-/** the simplest task 
- * 
- * @author luh
- */
-public class Task {
-	
-	private String taskdescription; // must have the EXACT name as his React state property and may not be ignored!
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
-	public Task() {
+@Entity
+public class Task {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String taskDescription;
+
+    // Getter für id
+    public Long getId() {
+        return id;
     }
 
-	public String getTaskdescription() { // do not apply camel-case here! Its a Bean!
-		return taskdescription;
-	}
+    // Getter und Setter für taskDescription
+    public String getTaskDescription() {
+        return taskDescription;
+    }
 
-	public void setTaskdescription(String taskdescription) { // do not apply camel-case here! Its a Bean!
-		this.taskdescription = taskdescription;
-	}
-
+    public void setTaskDescription(String taskDescription) {
+        this.taskDescription = taskDescription;
+    }
 }
